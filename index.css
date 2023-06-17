@@ -1,0 +1,121 @@
+body {
+	font-family: Arial, sans-serif;
+	background-color: #fafafa;
+	color: #333;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+ul {
+	list-style: none;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.timer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 120px;
+	margin: 20px;
+	cursor: pointer;
+}
+
+.time {
+	font-size: 20px;
+	width: 100px;
+	height: 100px;
+	background-color: #ff758c; /* Pink */
+	color: #fff; /* White text */
+	border-radius: 50%;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: transform 0.3s ease, background-color 0.3s ease; /* Added transition for background-color */
+}
+
+.title,
+.newTitle {
+	text-align: center;
+	margin-top: 10px;
+	font-size: 18px; /* Increase font size */
+	color: #414141; /* Darken text color for better contrast */
+	cursor: pointer;
+	transition: color 0.3s ease;
+	font-family: "Arial", sans-serif; /* Change the font, if desired */
+	text-transform: uppercase; /* Make the text uppercase */
+	letter-spacing: 1px; /* Add some letter spacing */
+}
+
+.title:hover {
+	color: #777; /* Change color on hover */
+}
+
+.newTimer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 120px;
+	margin: 20px;
+	cursor: pointer;
+}
+
+.addTimer {
+	font-size: 50px;
+	width: 100px;
+	height: 100px;
+	background-color: #eef0f4;
+	color: #333;
+	border-radius: 50%;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.addTimer:hover {
+	transform: scale(1.1);
+	background-color: #dde2e8;
+}
+
+.timer {
+	position: relative;
+}
+
+.delete {
+	position: absolute;
+	top: -15px; /* Adjust the vertical position */
+	right: -15px; /* Adjust the horizontal position */
+	width: 30px;
+	height: 30px;
+	background-color: #ff7575;
+	color: #fff;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+	cursor: pointer;
+	margin: 10px;
+	box-sizing: content-box;
+}
+
+.delete:hover {
+	background-color: #ff5a5a;
+}
