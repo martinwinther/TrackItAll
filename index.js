@@ -7,6 +7,9 @@ import {
 	doc,
 	updateDoc,
 	deleteDoc,
+	getDocs,
+	query,
+	where,
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -27,6 +30,53 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const container = document.querySelector("#timer-list");
+const uuidInput = document.querySelector("#uuid-input");
+const uuidDisplay = document.querySelector("#uuid-display");
+
+// Check if UUID exists in local storage
+let uuid = localStorage.getItem("uuid");
+
+// Generate and store UUID if it doesn't exist in local storage
+if (!uuid) {
+	uuid = generateUUID();
+	localStorage.setItem("uuid", uuid);
+}
+
+// Display UUID on the page
+uuidDisplay.textContent = `Your UUID: ${uuid}`;
+
+// Load timers based on UUID
+loadTimers(uuid);
+
+// Update UUID on form submission
+document.querySelector("#uuid-form").addEventListener("submit", async (e) => {
+	e.preventDefault();
+	const newUUID = uuidInput.value.trim();
+	if (newUUID) {
+		// Check if the entered UUID exists in the database (except for the initial auto-generated UUID)
+		if (newUUID !== uuid) {
+			const uuidQueryRef = query(
+				collection(db, "timers"),
+				where("uuid", "==", newUUID)
+			);
+			const snapshot = await getDocs(uuidQueryRef);
+			if (snapshot.empty) {
+				alert("Invalid UUID entered. Please try again.");
+				return;
+			}
+		}
+
+		// Valid UUID found or using the initial auto-generated UUID, update the display and load timers
+		uuid = newUUID;
+		uuidDisplay.textContent = `Your UUID: ${uuid}`;
+		clearTimers();
+		loadTimers(uuid);
+
+		// Update UUID in local storage
+		localStorage.setItem("uuid", uuid);
+	}
+	uuidInput.value = "";
+});
 
 document
 	.querySelector(".newTimer")
@@ -36,6 +86,7 @@ document
 			await addDoc(collection(db, "timers"), {
 				title: timerTitle,
 				time: 0,
+				uuid: uuid,
 			});
 		}
 	});
@@ -48,12 +99,12 @@ function createTimerElement(id, title, time) {
 	newTimer.classList.add("timer");
 	newTimer.id = id;
 	newTimer.innerHTML = `
-        <div class="time" style="background-color: ${
-					colors[colorIndex]
-				}">${formatTime(time)}</div>
-        <div class="title">${title}</div>
-        <div class="delete">X</div>
-    `;
+    <div class="time" style="background-color: ${
+			colors[colorIndex]
+		}">${formatTime(time)}</div>
+    <div class="title">${title}</div>
+    <div class="delete">X</div>
+  `;
 	colorIndex = (colorIndex + 1) % colors.length;
 	initTimer(newTimer, time);
 	return newTimer;
@@ -110,6 +161,10 @@ function initTimer(timer, initialTime) {
 	});
 }
 
+function clearTimers() {
+	container.innerHTML = "";
+}
+
 function formatTime(seconds) {
 	const minutes = Math.floor(seconds / 60);
 	const remainingSeconds = seconds % 60;
@@ -120,26 +175,47 @@ function padTime(time) {
 	return time < 10 ? `0${time}` : time;
 }
 
-onSnapshot(collection(db, "timers"), (snapshot) => {
-	snapshot.docChanges().forEach((change) => {
-		if (change.type === "added") {
-			const newTimer = createTimerElement(
-				change.doc.id,
-				change.doc.data().title,
-				change.doc.data().time
-			);
-			container.insertBefore(newTimer, document.querySelector(".newTimer"));
+async function loadTimers(uuid) {
+	const timersRef = collection(db, "timers");
+	const queryRef = query(timersRef, where("uuid", "==", uuid));
+
+	try {
+		const snapshot = await getDocs(queryRef);
+		if (snapshot.empty) {
+			console.log("No timers found for the provided UUID.");
+			return;
 		}
-		if (change.type === "modified") {
-			let timer = document.getElementById(change.doc.id);
-			timer.querySelector(".title").innerText = change.doc.data().title;
-			timer.querySelector(".time").innerText = formatTime(
-				change.doc.data().time
-			);
-		}
-		if (change.type === "removed") {
-			let timer = document.getElementById(change.doc.id);
-			timer.parentNode.removeChild(timer);
-		}
+
+		snapshot.docChanges().forEach((change) => {
+			if (change.type === "added") {
+				const newTimer = createTimerElement(
+					change.doc.id,
+					change.doc.data().title,
+					change.doc.data().time
+				);
+				container.insertBefore(newTimer, document.querySelector(".newTimer"));
+			}
+			if (change.type === "modified") {
+				let timer = document.getElementById(change.doc.id);
+				timer.querySelector(".title").innerText = change.doc.data().title;
+				timer.querySelector(".time").innerText = formatTime(
+					change.doc.data().time
+				);
+			}
+			if (change.type === "removed") {
+				let timer = document.getElementById(change.doc.id);
+				timer.parentNode.removeChild(timer);
+			}
+		});
+	} catch (error) {
+		console.log("Error loading timers:", error);
+	}
+}
+
+function generateUUID() {
+	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+		const r = (Math.random() * 16) | 0;
+		const v = c === "x" ? r : (r & 0x3) | 0x8;
+		return v.toString(16);
 	});
-});
+}
