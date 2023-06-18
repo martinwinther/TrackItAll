@@ -91,7 +91,18 @@ document
 		}
 	});
 
-let colors = ["#FEB2B2", "#FEB6FF", "#C4FCEF", "#FFD6A5"];
+let colors = [
+	"#F94144",
+	"#F3722C",
+	"#F8961E",
+	"#F9844A",
+	"F9C74F",
+	"90BE6D",
+	"43AA8B",
+	"4D908E",
+	"577590",
+	"277DA1",
+];
 let colorIndex = 0;
 
 function createTimerElement(id, title, time) {
@@ -132,7 +143,6 @@ function initTimer(timer, initialTime) {
 		const timer = document.getElementById(timerId);
 		if (timer) {
 			clearInterval(timer.interval); // Stop the timer interval
-			timer.remove();
 			deleteDoc(doc(db, "timers", timerId))
 				.then(() => {
 					console.log("Timer deleted successfully.");
@@ -175,12 +185,11 @@ function padTime(time) {
 	return time < 10 ? `0${time}` : time;
 }
 
-async function loadTimers(uuid) {
+function loadTimers(uuid) {
 	const timersRef = collection(db, "timers");
 	const queryRef = query(timersRef, where("uuid", "==", uuid));
 
-	try {
-		const snapshot = await getDocs(queryRef);
+	onSnapshot(queryRef, (snapshot) => {
 		if (snapshot.empty) {
 			console.log("No timers found for the provided UUID.");
 			return;
@@ -207,9 +216,7 @@ async function loadTimers(uuid) {
 				timer.parentNode.removeChild(timer);
 			}
 		});
-	} catch (error) {
-		console.log("Error loading timers:", error);
-	}
+	});
 }
 
 function generateUUID() {
@@ -219,3 +226,7 @@ function generateUUID() {
 		return v.toString(16);
 	});
 }
+
+document.getElementById("toggle-uuid").addEventListener("click", function () {
+	document.getElementById("uuid-container").classList.toggle("hidden");
+});

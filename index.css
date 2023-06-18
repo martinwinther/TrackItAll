@@ -1,5 +1,5 @@
 body {
-	font-family: Arial, sans-serif;
+	font-family: Roboto, Arial, sans-serif;
 	background-color: #fafafa;
 	color: #333;
 	display: flex;
@@ -12,8 +12,9 @@ body {
 
 .container {
 	display: flex;
-	flex-direction: column;
+	flex-direction: column; /* Changed from wrap to column */
 	align-items: center;
+	justify-content: center;
 }
 
 ul {
@@ -38,14 +39,18 @@ ul {
 	font-size: 20px;
 	width: 100px;
 	height: 100px;
-	background-color: #ff758c; /* Pink */
+	background-color: #f94144; /* Red */
 	color: #fff; /* White text */
 	border-radius: 50%;
 	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	transition: transform 0.3s ease, background-color 0.3s ease; /* Added transition for background-color */
+	transition: transform 0.3s ease, background-color 0.3s ease; /* Keep the existing transition for background-color */
+}
+
+.time:hover {
+	transform: scale(1.1); /* Increase the size of the timer on hover */
 }
 
 .title,
@@ -56,9 +61,9 @@ ul {
 	color: #414141; /* Darken text color for better contrast */
 	cursor: pointer;
 	transition: color 0.3s ease;
-	font-family: "Arial", sans-serif; /* Change the font, if desired */
-	text-transform: uppercase; /* Make the text uppercase */
-	letter-spacing: 1px; /* Add some letter spacing */
+	font-family: "Roboto", Arial, sans-serif; /* Change the font */
+	text-transform: uppercase;
+	letter-spacing: 1px;
 }
 
 .title:hover {
@@ -73,14 +78,13 @@ ul {
 	width: 120px;
 	margin: 20px;
 	cursor: pointer;
-	clear: both; /* Clear the float */
 }
 
 .addTimer {
 	font-size: 50px;
 	width: 100px;
 	height: 100px;
-	background-color: #eef0f4;
+	background-color: #f3722c; /* Orange */
 	color: #333;
 	border-radius: 50%;
 	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -92,7 +96,7 @@ ul {
 
 .addTimer:hover {
 	transform: scale(1.1);
-	background-color: #dde2e8;
+	background-color: #f8961e; /* Darker Orange */
 }
 
 .timer {
@@ -101,11 +105,11 @@ ul {
 
 .delete {
 	position: absolute;
-	top: -15px; /* Adjust the vertical position */
-	right: -15px; /* Adjust the horizontal position */
+	top: -15px;
+	right: -15px;
 	width: 30px;
 	height: 30px;
-	background-color: #ff7575;
+	background-color: #ff3d3d; /* Bright Red */
 	color: #fff;
 	border-radius: 50%;
 	display: flex;
@@ -115,30 +119,27 @@ ul {
 	cursor: pointer;
 	margin: 10px;
 	box-sizing: content-box;
+	transition: background-color 0.3s ease, transform 0.3s ease; /* Add transition for transform */
 }
 
 .delete:hover {
-	background-color: #ff5a5a;
+	background-color: #d32f2f; /* Darker Red */
+	transform: scale(1.1); /* Make the button slightly larger when hovered */
 }
 
 .uuid-container {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin-top: 20px; /* Add some top margin */
-}
-
-#uuid-form-container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
 	margin-top: 20px;
 }
 
 #uuid-form {
 	display: flex;
+	flex-direction: column; /* stack elements vertically on smaller screens */
 	align-items: center;
 	justify-content: center;
+	margin-top: 20px;
 	margin-bottom: 20px;
 }
 
@@ -146,23 +147,65 @@ ul {
 	padding: 8px;
 	border: 1px solid #ccc;
 	border-radius: 4px;
-	margin-right: 10px;
+	margin-bottom: 10px; /* stack elements vertically */
+	width: 100%; /* full width on smaller screens */
+	box-sizing: border-box; /* include padding and border in element's total width */
 }
 
-#uuid-submit {
-	background-color: #4caf50;
+#submit-button {
+	background: #0d47a1; /* Dark Blue */
 	color: white;
-	padding: 8px 16px;
+	padding: 12px 24px;
 	border: none;
-	border-radius: 4px;
+	border-radius: 5px;
 	cursor: pointer;
+	width: 100%;
+	box-sizing: border-box;
+	font-size: 1rem; /* Adjust font size */
+	font-weight: 500; /* Make the text a bit bolder */
+	transition: background-color 0.3s ease, transform 0.3s ease; /* Add transition for hover effects */
+	box-shadow: 0 2px 10px -2px rgba(13, 71, 161, 0.2); /* Adds a soft shadow */
 }
 
-#uuid-submit:hover {
-	background-color: #45a049;
+#submit-button:hover {
+	background: #1976d2; /* Lighter Blue on hover */
+	transform: scale(1.02); /* Make the button slightly larger when hovered */
+}
+
+#submit-button:active {
+	background: #1565c0; /* Even lighter blue when clicked */
+	transform: scale(1); /* Return to normal size when clicked */
 }
 
 #uuid-display {
-	font-size: 18px;
+	font-size: 1rem; /* use rem for responsive text sizing */
 	margin-bottom: 20px;
+	text-align: center; /* center the text */
+}
+
+#toggle-uuid {
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+	border: none;
+	background-color: #4caf50;
+	color: white;
+	border-radius: 50%;
+	height: 60px;
+	width: 60px;
+	text-align: center;
+	line-height: 60px;
+	font-size: 24px;
+	cursor: pointer;
+	z-index: 1000;
+	box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+	transition: background-color 0.3s ease;
+}
+
+#toggle-uuid:hover {
+	background-color: #45a049;
+}
+
+.hidden {
+	display: none;
 }
