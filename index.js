@@ -97,8 +97,13 @@ async function handleUUIDUpdate(newUUID) {
 async function handleNewTimerClick() {
 	const timerTitle = prompt("Enter the title for the new timer:");
 	if (timerTitle !== null) {
+		const trimmedTitle = timerTitle.trim(); // Trim leading and trailing whitespaces
+		if (trimmedTitle.length === 0) {
+			alert("Error: Please enter a valid title.");
+			return; // Exit the function if the title is empty
+		}
 		await addDoc(collection(db, "timers"), {
-			title: timerTitle.substring(0, 10),
+			title: trimmedTitle.substring(0, 10),
 			time: 0,
 			uuid: uuid,
 			createdAt: serverTimestamp(), // Timestamp of when the timer was created
@@ -158,10 +163,16 @@ function initTimer(timer, initialTime) {
 
 	// Event handlers for the title, delete, and timer clicks
 	function handleTitleClick() {
-		const newTitle = prompt("Enter a new title for this timer:");
+		const currentTitle = this.innerText;
+		const newTitle = prompt("Enter a new title for this timer:", currentTitle);
 		if (newTitle !== null) {
-			this.innerText = newTitle.substring(0, 10);
-			updateTimer(timer.id, { title: newTitle.substring(0, 10) }); // Update the timer's title in Firestore
+			const trimmedTitle = newTitle.trim(); // Trim leading and trailing whitespaces
+			if (trimmedTitle.length === 0) {
+				alert("Error: Please enter a valid title.");
+				return; // Exit the function if the title is empty
+			}
+			this.innerText = trimmedTitle.substring(0, 10);
+			updateTimer(timer.id, { title: trimmedTitle.substring(0, 10) }); // Update the timer's title in Firestore
 		}
 	}
 
