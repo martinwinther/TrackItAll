@@ -274,3 +274,28 @@ function generateUUID() {
 		return v.toString(16); // Convert the number to a hexadecimal string
 	});
 }
+
+// Add event listener to UUID display for copying to clipboard
+uuidDisplay.addEventListener("click", handleUUIDClick);
+
+// Event handler for UUID click
+function handleUUIDClick() {
+	// Create temporary input element
+	const tempInput = document.createElement("input");
+	tempInput.type = "text";
+	tempInput.value = uuid;
+	document.body.appendChild(tempInput);
+
+	// Select the input's text
+	tempInput.select();
+	tempInput.setSelectionRange(0, 99999); // For mobile devices
+
+	// Copy the selected text to clipboard
+	document.execCommand("copy");
+
+	// Remove the temporary input element
+	document.body.removeChild(tempInput);
+
+	// Show a notification or perform any other desired action
+	alert("UUID copied to clipboard!");
+}
