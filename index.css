@@ -181,8 +181,8 @@ li {
 
 #toggle-uuid {
 	position: fixed;
-	right: 20px;
-	bottom: 20px;
+	right: 50px;
+	bottom: 50px;
 	border: none;
 	background-color: #4caf50;
 	color: white;
