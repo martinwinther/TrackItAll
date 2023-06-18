@@ -1,10 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import {
 	getFirestore,
+	serverTimestamp,
 	collection,
 	addDoc,
 	onSnapshot,
 	doc,
+	orderBy,
 	updateDoc,
 	deleteDoc,
 	getDocs,
@@ -84,9 +86,10 @@ document
 		const timerTitle = prompt("Enter the title for the new timer:");
 		if (timerTitle !== null) {
 			await addDoc(collection(db, "timers"), {
-				title: timerTitle,
+				title: timerTitle.substring(0, 10),
 				time: 0,
 				uuid: uuid,
+				createdAt: serverTimestamp(), // New field
 			});
 		}
 	});
@@ -96,12 +99,12 @@ let colors = [
 	"#F3722C",
 	"#F8961E",
 	"#F9844A",
-	"F9C74F",
-	"90BE6D",
-	"43AA8B",
-	"4D908E",
-	"577590",
-	"277DA1",
+	"#F9C74F",
+	"#90BE6D",
+	"#43AA8B",
+	"#4D908E",
+	"#577590",
+	"#277DA1",
 ];
 let colorIndex = 0;
 
@@ -131,19 +134,20 @@ function initTimer(timer, initialTime) {
 	titleElement.addEventListener("click", function () {
 		const newTitle = prompt("Enter a new title for this timer:");
 		if (newTitle !== null) {
-			this.innerText = newTitle;
+			this.innerText = newTitle.substring(0, 10);
 			updateDoc(doc(db, "timers", timer.id), {
-				title: newTitle,
+				title: newTitle.substring(0, 10),
 			});
 		}
 	});
-
 	deleteButton.addEventListener("click", function () {
 		const timerId = this.parentNode.id;
 		const timer = document.getElementById(timerId);
 		if (timer) {
 			clearInterval(timer.interval); // Stop the timer interval
-			deleteDoc(doc(db, "timers", timerId))
+			const timerDoc = doc(db, "timers", timerId);
+			timer.remove(); // Immediately remove the timer from the DOM
+			deleteDoc(timerDoc)
 				.then(() => {
 					console.log("Timer deleted successfully.");
 				})
@@ -187,7 +191,11 @@ function padTime(time) {
 
 function loadTimers(uuid) {
 	const timersRef = collection(db, "timers");
-	const queryRef = query(timersRef, where("uuid", "==", uuid));
+	const queryRef = query(
+		timersRef,
+		where("uuid", "==", uuid),
+		orderBy("createdAt")
+	);
 
 	onSnapshot(queryRef, (snapshot) => {
 		if (snapshot.empty) {
@@ -213,7 +221,9 @@ function loadTimers(uuid) {
 			}
 			if (change.type === "removed") {
 				let timer = document.getElementById(change.doc.id);
-				timer.parentNode.removeChild(timer);
+				if (timer) {
+					timer.parentNode.removeChild(timer);
+				}
 			}
 		});
 	});

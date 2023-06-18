@@ -22,18 +22,20 @@
 	</head>
 	<body>
 		<div class="container">
-			<ul id="timer-list">
-				<li class="newTimer">
-					<div class="addTimer">+</div>
-				</li>
-			</ul>
-			<div id="uuid-container" class="hidden">
-				<form id="uuid-form">
-					<label for="uuid-input">Enter your UUID:</label>
-					<input type="text" id="uuid-input" required />
-					<button type="submit" id="submit-button">Submit</button>
-				</form>
-				<p id="uuid-display"></p>
+			<div class="content-area">
+				<ul id="timer-list">
+					<li class="newTimer">
+						<div class="addTimer">+</div>
+					</li>
+				</ul>
+				<div id="uuid-container" class="hidden">
+					<form id="uuid-form">
+						<label for="uuid-input">Enter your UUID:</label>
+						<input type="text" id="uuid-input" required />
+						<button type="submit" id="submit-button">Submit</button>
+					</form>
+					<p id="uuid-display"></p>
+				</div>
 			</div>
 			<button id="toggle-uuid">
 				<i class="fas fa-user-circle"></i>

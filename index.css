@@ -2,90 +2,64 @@ body {
 	font-family: Roboto, Arial, sans-serif;
 	background-color: #fafafa;
 	color: #333;
-	display: flex;
-	justify-content: center;
-	align-items: center;
 	height: 100vh;
 	margin: 0;
 	padding: 0;
+	overflow: auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
 .container {
-	display: flex;
-	flex-direction: column; /* Changed from wrap to column */
-	align-items: center;
-	justify-content: center;
+	width: 100%;
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 20px;
 }
 
-ul {
-	list-style: none;
-	padding: 0;
+.content-area {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
 }
 
-.timer {
+ul#timer-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+li {
+	box-sizing: border-box;
+	margin: 20px;
+}
+
+.timer,
+.newTimer {
+	width: 120px;
+	cursor: pointer;
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	width: 120px;
-	margin: 20px;
-	cursor: pointer;
 }
 
-.time {
+/* Rest of the code continues as it is... */
+
+.time,
+.addTimer {
 	font-size: 20px;
 	width: 100px;
 	height: 100px;
-	background-color: #f94144; /* Red */
-	color: #fff; /* White text */
-	border-radius: 50%;
-	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: transform 0.3s ease, background-color 0.3s ease; /* Keep the existing transition for background-color */
-}
-
-.time:hover {
-	transform: scale(1.1); /* Increase the size of the timer on hover */
-}
-
-.title,
-.newTitle {
-	text-align: center;
-	margin-top: 10px;
-	font-size: 18px; /* Increase font size */
-	color: #414141; /* Darken text color for better contrast */
-	cursor: pointer;
-	transition: color 0.3s ease;
-	font-family: "Roboto", Arial, sans-serif; /* Change the font */
-	text-transform: uppercase;
-	letter-spacing: 1px;
-}
-
-.title:hover {
-	color: #777; /* Change color on hover */
-}
-
-.newTimer {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	width: 120px;
-	margin: 20px;
-	cursor: pointer;
-}
-
-.addTimer {
-	font-size: 50px;
-	width: 100px;
-	height: 100px;
-	background-color: #f3722c; /* Orange */
-	color: #333;
+	background-color: #f94144;
+	color: #fff;
 	border-radius: 50%;
 	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 	display: flex;
@@ -94,13 +68,38 @@ ul {
 	transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
+.time:hover,
 .addTimer:hover {
 	transform: scale(1.1);
-	background-color: #f8961e; /* Darker Orange */
 }
 
-.timer {
-	position: relative;
+.title,
+.newTitle {
+	text-align: center;
+	margin-top: 10px;
+	font-size: 18px;
+	color: #414141;
+	cursor: pointer;
+	transition: color 0.3s ease;
+	font-family: "Roboto", Arial, sans-serif;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	word-break: break-word;
+	width: 100%;
+}
+
+.title:hover {
+	color: #777;
+}
+
+.addTimer {
+	font-size: 50px;
+	background-color: #f3722c;
+	color: #333;
+}
+
+.addTimer:hover {
+	background-color: #f8961e;
 }
 
 .delete {
@@ -109,7 +108,7 @@ ul {
 	right: -15px;
 	width: 30px;
 	height: 30px;
-	background-color: #ff3d3d; /* Bright Red */
+	background-color: #ff3d3d;
 	color: #fff;
 	border-radius: 50%;
 	display: flex;
@@ -119,24 +118,22 @@ ul {
 	cursor: pointer;
 	margin: 10px;
 	box-sizing: content-box;
-	transition: background-color 0.3s ease, transform 0.3s ease; /* Add transition for transform */
+	transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .delete:hover {
-	background-color: #d32f2f; /* Darker Red */
-	transform: scale(1.1); /* Make the button slightly larger when hovered */
+	background-color: #d32f2f;
+	transform: scale(1.1);
 }
 
-.uuid-container {
+#uuid-container {
+	grid-column: span 5;
+	width: 100%;
+}
+
+#uuid #uuid-form {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	margin-top: 20px;
-}
-
-#uuid-form {
-	display: flex;
-	flex-direction: column; /* stack elements vertically on smaller screens */
 	align-items: center;
 	justify-content: center;
 	margin-top: 20px;
@@ -147,13 +144,13 @@ ul {
 	padding: 8px;
 	border: 1px solid #ccc;
 	border-radius: 4px;
-	margin-bottom: 10px; /* stack elements vertically */
-	width: 100%; /* full width on smaller screens */
-	box-sizing: border-box; /* include padding and border in element's total width */
+	margin-bottom: 10px;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 #submit-button {
-	background: #0d47a1; /* Dark Blue */
+	background: #0d47a1;
 	color: white;
 	padding: 12px 24px;
 	border: none;
@@ -161,26 +158,26 @@ ul {
 	cursor: pointer;
 	width: 100%;
 	box-sizing: border-box;
-	font-size: 1rem; /* Adjust font size */
-	font-weight: 500; /* Make the text a bit bolder */
-	transition: background-color 0.3s ease, transform 0.3s ease; /* Add transition for hover effects */
-	box-shadow: 0 2px 10px -2px rgba(13, 71, 161, 0.2); /* Adds a soft shadow */
+	font-size: 1rem;
+	font-weight: 500;
+	transition: background-color 0.3s ease, transform 0.3s ease;
+	box-shadow: 0 2px 10px -2px rgba(13, 71, 161, 0.2);
 }
 
 #submit-button:hover {
-	background: #1976d2; /* Lighter Blue on hover */
-	transform: scale(1.02); /* Make the button slightly larger when hovered */
+	background: #1976d2;
+	transform: scale(1.02);
 }
 
 #submit-button:active {
-	background: #1565c0; /* Even lighter blue when clicked */
-	transform: scale(1); /* Return to normal size when clicked */
+	background: #1565c0;
+	transform: scale(1);
 }
 
 #uuid-display {
-	font-size: 1rem; /* use rem for responsive text sizing */
+	font-size: 1rem;
 	margin-bottom: 20px;
-	text-align: center; /* center the text */
+	text-align: center;
 }
 
 #toggle-uuid {
@@ -200,6 +197,9 @@ ul {
 	z-index: 1000;
 	box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 	transition: background-color 0.3s ease;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 #toggle-uuid:hover {
