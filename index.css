@@ -51,8 +51,6 @@ li {
 	justify-content: center;
 }
 
-/* Rest of the code continues as it is... */
-
 .time,
 .addTimer {
 	font-size: 20px;
@@ -128,7 +126,7 @@ li {
 
 #uuid-container {
 	grid-column: span 5;
-	width: 100%;
+	width: 80%;
 }
 
 #uuid #uuid-form {
