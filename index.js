@@ -193,14 +193,21 @@ function initTimer(timer, initialTime) {
 function handleTimerInterval(timerElement, running, displayTime) {
 	if (running) {
 		clearInterval(timerElement.interval);
-		updateTimer(timerElement.id, { isRunning: false });
+		const pausedTime = localStorage.getItem(`${timerElement.id}`);
+		if (pausedTime) {
+			updateTimer(timerElement.id, {
+				time: parseInt(pausedTime, 10),
+				isRunning: false,
+			});
+		}
 	} else {
 		getDoc(getTimerRef(timerElement.id)).then((doc) => {
 			let time = doc.data().time;
+			time = localStorage.getItem(`${timerElement.id}`) || time;
 			timerElement.interval = setInterval(() => {
 				time++;
 				displayTime.innerText = formatTime(time);
-				updateTimer(timerElement.id, { time: time, isRunning: true });
+				localStorage.setItem(`${timerElement.id}`, time);
 			}, 1000);
 		});
 	}
@@ -255,7 +262,6 @@ function handleSnapshotChange(snapshot) {
 		return;
 	}
 
-	// Loop over each document change in the snapshot
 	snapshot.docChanges().forEach(({ type, doc }) => {
 		const data = doc.data();
 		switch (type) {
@@ -263,18 +269,22 @@ function handleSnapshotChange(snapshot) {
 				const newTimer = createTimerElement(doc.id, data.title, data.time);
 				container.insertBefore(newTimer, document.querySelector(".newTimer"));
 				if (data.isRunning) {
-					// Add this condition
-					newTimer.click(); // Simulate a click to start the timer
+					newTimer.click();
 				}
 				break;
 			case "modified":
-				// If a document was modified, update the corresponding timer
 				let timer = document.getElementById(doc.id);
 				timer.querySelector(".title").innerText = data.title;
-				timer.querySelector(".time").innerText = formatTime(data.time);
+				let localTime = localStorage.getItem(doc.id);
+				if (localTime) {
+					timer.querySelector(".time").innerText = formatTime(
+						parseInt(localTime, 10)
+					);
+				} else {
+					timer.querySelector(".time").innerText = formatTime(data.time);
+				}
 				break;
 			case "removed":
-				// If a document was removed, remove the corresponding timer
 				let timerToRemove = document.getElementById(doc.id);
 				if (timerToRemove) {
 					timerToRemove.parentNode.removeChild(timerToRemove);
@@ -317,3 +327,12 @@ function handleUUIDClick() {
 	// Show a notification or perform any other desired action
 	alert("UUID copied to clipboard!");
 }
+
+window.addEventListener("beforeunload", (event) => {
+	const timers = document.querySelectorAll(".timer");
+	timers.forEach((timer) => {
+		if (timer.interval) {
+			timer.click();
+		}
+	});
+});
