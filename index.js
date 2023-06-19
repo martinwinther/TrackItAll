@@ -10,7 +10,7 @@ import {
 	orderBy,
 	updateDoc,
 	deleteDoc,
-	getDocs,
+	getDoc,
 	query,
 	where,
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
@@ -79,7 +79,7 @@ async function handleUUIDUpdate(newUUID) {
 			collection(db, "timers"),
 			where("uuid", "==", newUUID)
 		);
-		const snapshot = await getDocs(uuidQueryRef);
+		const snapshot = await getDoc(uuidQueryRef);
 		if (snapshot.empty) {
 			alert("Invalid UUID entered. Please try again.");
 			return;
@@ -107,6 +107,7 @@ async function handleNewTimerClick() {
 			time: 0,
 			uuid: uuid,
 			createdAt: serverTimestamp(), // Timestamp of when the timer was created
+			isRunning: false, // Add this line
 		});
 	}
 }
@@ -150,7 +151,6 @@ function createTimerElement(id, title, time) {
 
 // Function to initialize a timer with various functionalities
 function initTimer(timer, initialTime) {
-	let time = initialTime;
 	let running = false;
 	const displayTime = timer.querySelector(".time"); // Select the time display element
 	const titleElement = timer.querySelector(".title"); // Select the title element
@@ -184,23 +184,27 @@ function initTimer(timer, initialTime) {
 
 	function handleTimerClick(e) {
 		if (e.target !== titleElement && e.target !== deleteButton) {
-			running = handleTimerInterval(this, running, time, displayTime); // Toggle whether the timer is running
+			({ running } = handleTimerInterval(this, running, displayTime)); // Toggle whether the timer is running
 		}
 	}
 }
 
 // Function to handle the timer's interval: if it's running, stop it, otherwise start it
-function handleTimerInterval(timerElement, running, time, displayTime) {
+function handleTimerInterval(timerElement, running, displayTime) {
 	if (running) {
-		clearInterval(timerElement.interval); // If the timer is running, stop it
+		clearInterval(timerElement.interval);
+		updateTimer(timerElement.id, { isRunning: false });
 	} else {
-		timerElement.interval = setInterval(() => {
-			time++;
-			displayTime.innerText = formatTime(time); // Display the updated time
-			updateTimer(timerElement.id, { time: time }); // Update the time in Firestore
-		}, 1000);
+		getDoc(getTimerRef(timerElement.id)).then((doc) => {
+			let time = doc.data().time;
+			timerElement.interval = setInterval(() => {
+				time++;
+				displayTime.innerText = formatTime(time);
+				updateTimer(timerElement.id, { time: time, isRunning: true });
+			}, 1000);
+		});
 	}
-	return !running; // Return the opposite of the current running state
+	return { running: !running };
 }
 
 // Function to delete a timer both from the Firestore and the DOM
@@ -253,12 +257,15 @@ function handleSnapshotChange(snapshot) {
 
 	// Loop over each document change in the snapshot
 	snapshot.docChanges().forEach(({ type, doc }) => {
-		const data = doc.data(); // Get the document's data
+		const data = doc.data();
 		switch (type) {
 			case "added":
-				// If a new document was added, create a new timer for it
 				const newTimer = createTimerElement(doc.id, data.title, data.time);
 				container.insertBefore(newTimer, document.querySelector(".newTimer"));
+				if (data.isRunning) {
+					// Add this condition
+					newTimer.click(); // Simulate a click to start the timer
+				}
 				break;
 			case "modified":
 				// If a document was modified, update the corresponding timer
