@@ -17,12 +17,12 @@ import {
 
 // Firebase configuration
 const firebaseConfig = {
-	apiKey: process.env.REACT_APP_apiKey,
-	authDomain: process.env.REACT_APP_authDomain,
-	projectId: process.env.REACT_APP_projectId,
-	storageBucket: process.env.REACT_APP_storageBucket,
-	messagingSenderId: process.env.REACT_APP_messagingSenderId,
-	appId: process.env.REACT_APP_appId,
+	apiKey: "AIzaSyDy7aTvJeSSP3om4g_exxP_GNhG7HMRok0",
+	authDomain: "trackitall-29e3c.firebaseapp.com",
+	projectId: "trackitall-29e3c",
+	storageBucket: "trackitall-29e3c.appspot.com",
+	messagingSenderId: "158883282304",
+	appId: "1:158883282304:web:203e7243e605e64d691565",
 };
 
 // Initialize Firebase
